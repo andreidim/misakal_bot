@@ -13,7 +13,7 @@ class RetroAchiCommand {
   }
 
   build(argValues) {
-    this.endPoint += '&key=' + this.key;
+    this.endPoint += '?key=' + this.key;
     if (this.args != undefined) {
       this.args.forEach((arg, i) => {
         this.endPoint += '&' + arg + '=' + argValues[i];
@@ -25,11 +25,14 @@ class RetroAchiCommand {
   async execCmd(argValues) {
     let response;
     try {
-      response = await axios.get(this.build(argValues));
+      let query = this.build(argValues);
+      console.log("Querying Retro Achievements API: " + query);
+      response = await axios.get(query);
+      console.log(response.status);
     } catch (err) {
       logger.error('Http error', err);
     }
-    if (!converter)
+    if (this.converter != undefined)
       return this.converter(response);
     return response;
 
@@ -57,12 +60,14 @@ export default  class RetroAchivClient {
     this.commands.push(cmd);
   }
 
-  runCommand(cmd, args) {
-    let raCmd = this.commands.filter(cmd => cmd.cmd == cmd);
+  async runCommand(cmd, args) {
+    console.log('==>' + cmd + ' args ' + args);
+    let raCmd = this.commands.find(x => x.cmd == cmd);
+    console.log('==>' + raCmd);
     if (!raCmd) {
       return "Unknown command, please check avalilable command list"
     }
-    return raCmd.execCmd(args);
+    return await raCmd.execCmd(args);
 
 
   }

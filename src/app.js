@@ -24,7 +24,8 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 
 // Listen for any kind of message. There are different kinds of
 // messages.
-bot.on('message', (msg) => {
+
+bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
 
   // send a message to the chat acknowledging receipt of their message
@@ -35,6 +36,8 @@ bot.on('message', (msg) => {
   if(parts.length > 1)
      args = parts.slice(1);
  console.log(cmd + ' ' + args);
-  let resp = retroAchiClient.runCommand(cmd, args);
+  let resp =  await retroAchiClient.runCommand(cmd, args);
   bot.sendMessage(chatId, resp);
+ // console.log(resp);
+
 });
