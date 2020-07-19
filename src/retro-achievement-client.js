@@ -28,7 +28,7 @@ class RetroAchiCommand {
       let query = this.build(argValues);
       console.log("Querying Retro Achievements API: " + query);
       response = await axios.get(query);
-      console.log(response.status);
+      console.log(response.data);
     } catch (err) {
       logger.error('Http error', err);
     }
