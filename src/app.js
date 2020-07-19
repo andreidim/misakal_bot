@@ -1,40 +1,29 @@
-import express from 'express';
-import path from 'path';
-import logger from 'morgan';
-import bodyParser from 'body-parser';
-import routes from './routes';
+import TelegramBot from 'node-telegram-bot-api';
 
-const app = express();
-app.disable('x-powered-by');
+// replace the value below with the Telegram token you receive from @BotFather
+const token = '1356899881:AAHF4AWoZVg3Vsp4WogcIsqTDy5Cjst3mGo';
 
-// View engine setup
-app.set('views', path.join(__dirname, '../views'));
-app.set('view engine', 'pug');
+// Create a bot that uses 'polling' to fetch new updates
+const bot = new TelegramBot(token, {polling: true});
 
-app.use(logger('dev', {
-  skip: () => app.get('env') === 'test'
-}));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, '../public')));
+// Matches "/echo [whatever]"
+bot.onText(/\/echo (.+)/, (msg, match) => {
+  // 'msg' is the received Message from Telegram
+  // 'match' is the result of executing the regexp above on the text content
+  // of the message
 
-// Routes
-app.use('/', routes);
+  const chatId = msg.chat.id;
+  const resp = match[1]; // the captured "whatever"
 
-// Catch 404 and forward to error handler
-app.use((req, res, next) => {
-  const err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+  // send back the matched "whatever" to the chat
+  bot.sendMessage(chatId, resp);
 });
 
-// Error handler
-app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-  res
-    .status(err.status || 500)
-    .render('error', {
-      message: err.message
-    });
-});
+// Listen for any kind of message. There are different kinds of
+// messages.
+bot.on('message', (msg) => {
+  const chatId = msg.chat.id;
 
-export default app;
+  // send a message to the chat acknowledging receipt of their message
+  bot.sendMessage(chatId, 'Received your message');
+});
