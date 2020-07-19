@@ -14,9 +14,11 @@ class RetroAchiCommand {
 
   build(argValues) {
     this.endPoint += '&key=' + this.key;
-    this.args.forEach((arg, i) => {
-      this.endPoint += '&' + arg + '=' + argValues[i];
-    });
+    if (this.args != undefined) {
+      this.args.forEach((arg, i) => {
+        this.endPoint += '&' + arg + '=' + argValues[i];
+      });
+    }
 
     return this.endPoint;
   }
@@ -36,17 +38,17 @@ class RetroAchiCommand {
 
 }
 
-export class RetroAchivClient {
+export default  class RetroAchivClient {
 
 
   constructor() {
-    const ApiKey ='R030CUCmooaDbVD3eBqFhBCeVop6cShW';
-    const EndPointRoot ='https://ra.hfc-essentials.com/';
+    const ApiKey = 'R030CUCmooaDbVD3eBqFhBCeVop6cShW';
+    const EndPointRoot = 'https://ra.hfc-essentials.com/';
 
     this.commands = new Array();
 
     //Adding TopTen Command
-    addCommand( new RetroAchiCommand(EndPointRoot+'top_ten.php',ApiKey,'/rank',['user']) );
+    this.addCommand(new RetroAchiCommand(EndPointRoot + 'top_ten.php', ApiKey, '/rank', ['user']));
 
   }
 
@@ -56,11 +58,11 @@ export class RetroAchivClient {
   }
 
   runCommand(cmd, args) {
-    let cmd = this.commands.filter(cmd => cmd.cmd == cmd);
-    if (!cmd) {
+    let raCmd = this.commands.filter(cmd => cmd.cmd == cmd);
+    if (!raCmd) {
       return "Unknown command, please check avalilable command list"
     }
-    return cmd.execCmd(args);
+    return raCmd.execCmd(args);
 
 
   }
