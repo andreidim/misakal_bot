@@ -28,7 +28,7 @@ class RetroAchiCommand {
       let query = this.build(argValues);
       console.log("Querying Retro Achievements API: " + query);
       response = await axios.get(query);
-      console.log(response.data);
+      response = response.data;
     } catch (err) {
       logger.error('Http error', err);
     }
@@ -41,7 +41,7 @@ class RetroAchiCommand {
 
 }
 
-export default  class RetroAchivClient {
+export default class RetroAchivClient {
 
 
   constructor() {
@@ -51,7 +51,22 @@ export default  class RetroAchivClient {
     this.commands = new Array();
 
     //Adding TopTen Command
-    this.addCommand(new RetroAchiCommand(EndPointRoot + 'top_ten.php', ApiKey, '/rank', ['user']));
+    this.addCommand(new RetroAchiCommand(EndPointRoot + 'top_ten.php', ApiKey, '/top10', ['user']));
+
+    this.addCommand(new RetroAchiCommand(EndPointRoot + 'console_id.php', ApiKey, '/consoles', ['user']));
+
+    this.addCommand(new RetroAchiCommand(EndPointRoot + 'game_list.php', ApiKey, '/glist', ['user','console']));
+
+    this.addCommand(new RetroAchiCommand(EndPointRoot + 'game_info.php', ApiKey, '/ginfo', ['user','game']));
+
+    this.addCommand(new RetroAchiCommand(EndPointRoot + 'game_info_extended.php', ApiKey, '/ginfoext', ['user','game']));
+
+    this.addCommand(new RetroAchiCommand(EndPointRoot + 'game_progress.php', ApiKey, '/gprog', ['user','game']));
+
+    this.addCommand(new RetroAchiCommand(EndPointRoot + 'user_progress.php', ApiKey, '/uprog', ['user','game']));
+
+    this.addCommand(new RetroAchiCommand(EndPointRoot + 'user_rank.php', ApiKey, '/rank', ['user','game']));
+
 
   }
 
@@ -61,11 +76,17 @@ export default  class RetroAchivClient {
   }
 
   async runCommand(cmd, args) {
+
     console.log('==>' + cmd + ' args ' + args);
     let raCmd = this.commands.find(x => x.cmd == cmd);
     console.log('==>' + raCmd);
     if (!raCmd) {
       return "Unknown command, please check avalilable command list"
+    }
+
+    if( raCmd.args != null && args == null ||
+          raCmd.args != null && args.length < raCmd.args.length ){
+      return 'Command: '+ raCmd.cmd+' must have arguments: ' +  raCmd.args ;
     }
     return await raCmd.execCmd(args);
 
