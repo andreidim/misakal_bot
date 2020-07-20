@@ -8,22 +8,32 @@ class RetroAchiCommand {
         this.endPoint = endPoint;
         this.cmd = cmd;
         this.args = args;
-        this.converter = converter;
+        //This property will be populated evertyme build
+        //comand is execute.
+        this.userArgs = null;
+        //Default Converter, just convert JSON in String.
+        this.converter = (x) => JSON.stringify(x);
+        if (converter)
+            this.converter = converter;
 
     }
 
+    
     build(argValues) {
         let paramJoin = this.endPoint.indexOf("?") < 0 ? '?' : '&';
         let endPoint = this.endPoint;
         endPoint += paramJoin + 'key=' + this.key;
+        this.userArgs = {};
         if (this.args != undefined) {
             this.args.forEach((arg, i) => {
                 endPoint += '&' + arg + '=' + argValues[i];
+                this.userArgs[arg] = argValues[i];
             });
         }
-
+        console.info(JSON.stringify(this.userArgs));
         return endPoint;
     }
+
     async execCmd(argValues) {
         let response;
         try {
@@ -31,8 +41,10 @@ class RetroAchiCommand {
             console.log("Querying Retro Achievements API: " + query);
             response = await axios.get(query);
             response = response.data;
+            response.userArgs = this.userArgs;
+
         } catch (err) {
-            logger.error('Http error', err);
+            console.error('Http error', err);
             throw err;
         }
         if (this.converter != undefined)
@@ -47,8 +59,7 @@ export default class RetroAchivClient {
 
     constructor() {
         const user = 'Inco';
-        const ApiKey = 'R030CUCmooaDbVD3eBqFhBCeVop6cShW&user='+user+'&mode=json';
-        const ApiKeyNoUser = 'R030CUCmooaDbVD3eBqFhBCeVop6cShW';
+        const ApiKey = 'R030CUCmooaDbVD3eBqFhBCeVop6cShW&user=' + user + '&mode=json';
         const EndPointRoot = 'https://ra.hfc-essentials.com/';
 
         this.commands = new Array();
@@ -67,12 +78,13 @@ export default class RetroAchivClient {
         this.addCommand(new RetroAchiCommand(EndPointRoot + 'game_progress.php', ApiKey, '/gprog', ['game']));
 
         this.addCommand(new RetroAchiCommand(EndPointRoot + 'user_progress.php', ApiKey, '/uprog', ['game']));
-       
+
         this.addCommand(
-                new RetroAchiCommand(
-                     EndPointRoot + 'user_rank.php', ApiKey, 
-                     '/rank', ['member'],
-                     (x)=> `Your Score: ${x.Score} and Rank: ${x.Rank}`) );
+            new RetroAchiCommand(
+                EndPointRoot + 'user_rank.php', ApiKey,
+                '/rank', ['member'],
+                (x) => `${x.userArgs.member} Your Score is
+                         ${x.Score} and your Rank is ${x.Rank}`));
 
         this.addCommand(new RetroAchiCommand(EndPointRoot + 'user_recent.php', ApiKey, '/recent', ['member', 'game']));
 

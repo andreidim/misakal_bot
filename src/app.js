@@ -26,16 +26,21 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 // messages.
 
 bot.on('message', async (msg) => {
-    const chatId = msg.chat.id;
-    // send a message to the chat acknowledging receipt of their message
-    let parts = msg.text.trim().split(' ');
-    let cmd = parts[0];
-    let args = null;
-    if (parts.length > 1)
-        args = parts.slice(1);
-    console.log(cmd + ' ' + args);
-    let resp = await retroAchiClient.runCommand(cmd, args);
-    //console.info("Resp : " + JSON.stringify(resp));
-    bot.sendMessage(chatId,  JSON.stringify(resp));
+    try {
+        const chatId = msg.chat.id;
+        // send a message to the chat acknowledging receipt of their message
+        let parts = msg.text.trim().split(' ');
+        let cmd = parts[0];
+        let args = null;
+        if (parts.length > 1)
+            args = parts.slice(1);
+        console.log(cmd + ' ' + args);
+        let resp = await retroAchiClient.runCommand(cmd, args);
+        //console.info("Resp : " + JSON.stringify(resp));
+        bot.sendMessage(chatId, resp);
+    } catch (err) {
+        console.error("Error while processing command ", err);
+    }
+
 
 });
