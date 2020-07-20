@@ -82,13 +82,17 @@ export default class RetroAchivClient {
         this.addCommand(
             new RetroAchiCommand(
                 EndPointRoot + 'user_rank.php', ApiKey,
-                '/rank', ['member'],
-                (x) => `${x.userArgs.member} Your Score is
-                         ${x.Score} and your Rank is ${x.Rank}`));
+                  '/rank', ['member'],
+                  (x) => `${x.userArgs.member} Your Score is ${x.Score} and your Rank is ${x.Rank}`));
 
         this.addCommand(new RetroAchiCommand(EndPointRoot + 'user_recent.php', ApiKey, '/recent', ['member', 'game']));
 
-        this.addCommand(new RetroAchiCommand(EndPointRoot + 'user_summary.php?results=10', ApiKey, '/summary', ['member', 'game']));
+        this.addCommand(
+               new RetroAchiCommand(EndPointRoot + 'user_summary.php?results=10', ApiKey,
+                '/summary', ['member'],
+                (x) =>  `${x.userArgs.member} Recently Played: \n` 
+                       + x.RecentlyPlayed.map(x => 
+                       `    ${x.Title} \n Last Played: ${x.LastPlayed}\n` ).join(' ') ));
 
     }
 
