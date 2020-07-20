@@ -1,5 +1,6 @@
 import axios from 'axios';
 import repStr from './util.js';
+import "core-js/fn/array/flat-map";
 
 
 class RetroAchiCommand {
@@ -93,14 +94,22 @@ export default class RetroAchivClient {
         this.addCommand(
                new RetroAchiCommand(EndPointRoot + 'user_summary.php?results=10', ApiKey,
                 '/summary', ['member'],
-                (x) =>  
-                       
-                       `<b>${x.userArgs.member} Recently Played:</b> \n ${repStr('_',33) }\n` 
-                       + x.RecentlyPlayed.map(x => 
-                       `${x.Title}\n Last Played: ${x.LastPlayed}\n ${repStr('_',33) }\n`  ).join(' ') 
-                       +  `\n ${repStr('_',33) }\n<b>${x.userArgs.member} Recently Achievements</b> \n ${repStr('_',33) }\n`
-                       + Object.values(x.RecentAchievements).flatMap(x => Object.values(x) )
-                       .map(x =>  `Achievement ${x.Title} for game ${x.GameTitle}\n points ${x.points}\n ${repStr('_',33) }\n`  ) )  );
+                (x) =>  {
+                        let ln = repStr('_',33);
+                        let output = `<b>${x.userArgs.member} Recently Played:</b> \n ${ln }\n` ;
+                        let recents =  x.RecentlyPlayed.map(x => `${x.Title}\n Last Played: ${x.LastPlayed}\n ${ln}\n`).join(' '); 
+                        output += recents;
+
+                        let achievments = `\n ${ln}\n<b>${x.userArgs.member} Recently Achievements</b> \n ${ln}\n`;
+                        let achivList = Object.values(x.RecentAchievements)
+                            .flatMap(x => Object.values(x) )
+                                 .map(x =>  
+                                      `Achievement ${x.Title} for game ${x.GameTitle}\n points ${x.Points}\n ${ln }\n` );
+
+                        output += achievments + achivList.join(' ');
+
+                       return output;      
+                 } )  );
 
                 
 
