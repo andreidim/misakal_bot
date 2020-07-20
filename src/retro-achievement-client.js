@@ -33,6 +33,7 @@ class RetroAchiCommand {
             response = response.data;
         } catch (err) {
             logger.error('Http error', err);
+            throw err;
         }
         if (this.converter != undefined)
             return this.converter(response);
@@ -45,7 +46,8 @@ export default class RetroAchivClient {
 
 
     constructor() {
-        const ApiKey = 'R030CUCmooaDbVD3eBqFhBCeVop6cShW&user=inco';
+        const user = 'Inco';
+        const ApiKey = 'R030CUCmooaDbVD3eBqFhBCeVop6cShW&user='+user+'&mode=json';
         const ApiKeyNoUser = 'R030CUCmooaDbVD3eBqFhBCeVop6cShW';
         const EndPointRoot = 'https://ra.hfc-essentials.com/';
 
@@ -65,8 +67,13 @@ export default class RetroAchivClient {
         this.addCommand(new RetroAchiCommand(EndPointRoot + 'game_progress.php', ApiKey, '/gprog', ['game']));
 
         this.addCommand(new RetroAchiCommand(EndPointRoot + 'user_progress.php', ApiKey, '/uprog', ['game']));
+       
+        this.addCommand(
+                new RetroAchiCommand(
+                     EndPointRoot + 'user_rank.php', ApiKey, 
+                     '/rank', ['member'],
+                     (x)=> `Your Score: ${x.Score} and Rank: ${x.Rank}`) );
 
-        this.addCommand(new RetroAchiCommand(EndPointRoot + 'user_rank.php', ApiKey, '/rank', ['member']));
         this.addCommand(new RetroAchiCommand(EndPointRoot + 'user_recent.php', ApiKey, '/recent', ['member', 'game']));
 
         this.addCommand(new RetroAchiCommand(EndPointRoot + 'user_summary.php?results=10', ApiKey, '/summary', ['member', 'game']));

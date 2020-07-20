@@ -35,6 +35,7 @@ bot.on('message', async (msg) => {
         args = parts.slice(1);
     console.log(cmd + ' ' + args);
     let resp = await retroAchiClient.runCommand(cmd, args);
-    bot.sendMessage(chatId, resp);
+    //console.info("Resp : " + JSON.stringify(resp));
+    bot.sendMessage(chatId,  JSON.stringify(resp));
 
 });
