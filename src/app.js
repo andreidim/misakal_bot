@@ -40,7 +40,7 @@ bot.on('message', async  (msg) => {
   /*resp.then( (result) => {
    bot.sendMessage(chatId, result);
   });*/
-  console.log(resp);
+  //console.log(resp);
   bot.sendMessage(chatId, resp);
 
 
