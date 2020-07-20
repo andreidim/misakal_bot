@@ -36,8 +36,7 @@ bot.on('message', async (msg) => {
             args = parts.slice(1);
         console.log(cmd + ' ' + args);
         let resp = await retroAchiClient.runCommand(cmd, args);
-        console.info("Resp : " + JSON.stringify(resp));
-        bot.sendMessage(chatId, resp);
+        bot.sendMessage(chatId, resp,{parse_mode : "HTML"});
     } catch (err) {
         console.error("Error while processing command ", err);
     }

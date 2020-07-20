@@ -1,4 +1,6 @@
 import axios from 'axios';
+import repStr from './util.js';
+
 
 class RetroAchiCommand {
 
@@ -58,6 +60,7 @@ export default class RetroAchivClient {
 
 
     constructor() {
+      
         const user = 'Inco';
         const ApiKey = 'R030CUCmooaDbVD3eBqFhBCeVop6cShW&user=' + user + '&mode=json';
         const EndPointRoot = 'https://ra.hfc-essentials.com/';
@@ -90,9 +93,16 @@ export default class RetroAchivClient {
         this.addCommand(
                new RetroAchiCommand(EndPointRoot + 'user_summary.php?results=10', ApiKey,
                 '/summary', ['member'],
-                (x) =>  `${x.userArgs.member} Recently Played: \n` 
+                (x) =>  
+                       
+                       `<b>${x.userArgs.member} Recently Played:</b> \n ${repStr('_',33) }\n` 
                        + x.RecentlyPlayed.map(x => 
-                       `    ${x.Title} \n Last Played: ${x.LastPlayed}\n` ).join(' ') ));
+                       `${x.Title}\n Last Played: ${x.LastPlayed}\n ${repStr('_',33) }\n`  ).join(' ') 
+                       +  `\n ${repStr('_',33) }\n<b>${x.userArgs.member} Recently Achievements</b> \n ${repStr('_',33) }\n`
+                       + Object.values(x.RecentAchievements).flatMap(x => Object.values(x) )
+                       .map(x =>  `Achievement ${x.Title} for game ${x.GameTitle}\n points ${x.points}\n ${repStr('_',33) }\n`  ) )  );
+
+                
 
     }
 
