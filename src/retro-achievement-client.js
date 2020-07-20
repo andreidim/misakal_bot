@@ -100,7 +100,7 @@ export default class RetroAchivClient {
                         let recents =  x.RecentlyPlayed.map(x => `${x.Title}\n Last Played: ${x.LastPlayed}\n ${ln}\n`).join(' '); 
                         output += recents;
 
-                        let achievments = `\n\n ${ln}\n<b>${x.userArgs.member} Recently Achievements</b> \n ${ln}\n`;
+                        let achievments = `\n ${ln}\n\n<b>${x.userArgs.member} Recently Achievements</b> \n ${ln}\n`;
                         let achivList = Object.values(x.RecentAchievements)
                             .flatMap(x => Object.values(x) )
                                  .map(x =>  
