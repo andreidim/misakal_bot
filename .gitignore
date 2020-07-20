@@ -63,3 +63,9 @@ typings/
 # Custom
 .idea
 dist
+
+#Eclipse Chec config
+.nvmcr
+.env.example
+.editorconfig
+
