@@ -95,18 +95,22 @@ export default class RetroAchivClient {
                new RetroAchiCommand(EndPointRoot + 'user_summary.php?results=10', ApiKey,
                 '/summary', ['member'],
                 (x) =>  {
-                        let ln = repStr('_',33);
-                        let output = `<b>${x.userArgs.member} Recently Played:</b> \n ${ln }\n` ;
-                        let recents =  x.RecentlyPlayed.map(x => `${x.Title}\n Last Played: ${x.LastPlayed}\n ${ln}\n`).join(' '); 
+                        let ln = '\n' + repStr('_',33);
+                        let output = `<b>${x.userArgs.member} Recently Played:</b>  ${ln }\n` ;
+                        let recents =  x.RecentlyPlayed.map(x => `${x.Title}\n Last Played: ${x.LastPlayed} ${ln}\n`).join(' '); 
                         output += recents;
 
-                        let achievments = `\n ${ln}\n\n<b>${x.userArgs.member} Recently Achievements</b> \n ${ln}\n`;
+                        let achievments = `${ln}\n\n<b>${x.userArgs.member} Recently Achievements</b> ${ln}\n`;
                         let achivList = Object.values(x.RecentAchievements)
                             .flatMap(x => Object.values(x) )
                                  .map(x =>  
-                                      `Achievement ${x.Title}\n for game ${x.GameTitle}\n points ${x.Points}\n ${ln }\n` );
+                                      ` ${x.Title}\n for game ${x.GameTitle}\n points ${x.Points} ${ln }\n` );
 
                         output += achievments + achivList.join(' ');
+
+                        output += `<b>Points:</b> ${x.Points} `;
+                        output += `${ln} <b>Pic:</b> <a href='https://retroachievements.org/${x.UserPic}'>Pic</a> `;
+                        output += `<b>Status:</b> ${x.Status == 'Offline' ? '&#128308;' :'&#9989;' } `;
 
                        return output;      
                  } )  );
