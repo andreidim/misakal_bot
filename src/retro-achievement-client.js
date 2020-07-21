@@ -45,6 +45,8 @@ class RetroAchiCommand {
             response = await axios.get(query);
             response = response.data;
             response.userArgs = this.userArgs;
+            if(response == null || response.length == 0)
+                return 'No result... Please try again';
 
         } catch (err) {
             console.error('Http error', err);
@@ -71,10 +73,14 @@ export default class RetroAchivClient {
         //Adding TopTen Command
         this.addCommand(new RetroAchiCommand(EndPointRoot + 'top_ten.php', ApiKey, '/top10'));
 
-        this.addCommand(new RetroAchiCommand(EndPointRoot + 'console_id.php', ApiKey, '/consoles',
-          (x)=> x.console.flatMap(x => x).map(x=> `\n ${x.ID} Console: ${x.Name}`).join(' ') ));
+        this.addCommand(new RetroAchiCommand(EndPointRoot + 'console_id.php', ApiKey, '/consoles',null,
+          (x)=> '<b>List of Consoles:</b>\n'+x.console.flatMap(x => x).map(x=> `\n ${x.ID} Console: ${x.Name}`).join(' ') ));
 
-        this.addCommand(new RetroAchiCommand(EndPointRoot + 'game_list.php', ApiKey, '/glist', ['console']));
+        this.addCommand(new RetroAchiCommand(EndPointRoot + 'game_list.php',
+         ApiKey, '/glist', ['console','filter'], 
+         (g)=> `<b>Game List Console: ${g.userArgs.console} Search: ${g.userArgs.filter}</b>\n`
+                   + g.game.flatMap(x => x).filter(x=> x.Title.toLowerCase().indexOf(g.userArgs.filter.toLowerCase()) > -1)
+                                         .map( x => `\nID: ${x.ID} Game: ${x.Title}` ).join(' ') ));
 
         this.addCommand(new RetroAchiCommand(EndPointRoot + 'game_info.php', ApiKey, '/ginfo', ['game']));
 
