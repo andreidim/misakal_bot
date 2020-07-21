@@ -71,7 +71,8 @@ export default class RetroAchivClient {
         //Adding TopTen Command
         this.addCommand(new RetroAchiCommand(EndPointRoot + 'top_ten.php', ApiKey, '/top10'));
 
-        this.addCommand(new RetroAchiCommand(EndPointRoot + 'console_id.php', ApiKey, '/consoles'));
+        this.addCommand(new RetroAchiCommand(EndPointRoot + 'console_id.php', ApiKey, '/consoles',
+          (x)=> x.console.flatMap(x => x).map(x=> `\n ${x.ID} Console: ${x.Name}`).join(' ') ));
 
         this.addCommand(new RetroAchiCommand(EndPointRoot + 'game_list.php', ApiKey, '/glist', ['console']));
 
