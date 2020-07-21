@@ -79,8 +79,11 @@ export default class RetroAchivClient {
         this.addCommand(new RetroAchiCommand(EndPointRoot + 'game_list.php',
          ApiKey, '/glist', ['console','filter'], 
          (g)=> `<b>Game List Console: ${g.userArgs.console} Search: ${g.userArgs.filter}</b>\n`
-                   + g.game.flatMap(x => x).filter(x=> x.Title.toLowerCase().indexOf(g.userArgs.filter.toLowerCase()) > -1)
+                   + g.game.flatMap(x => x)
+                         .filter(x=> x.Title.toLowerCase()
+                                    .indexOf(g.userArgs.filter.toLowerCase()) > -1)
                                          .map( x => `\nID: ${x.ID} Game: ${x.Title}` ).join(' ') ));
+                                         
 
         this.addCommand(new RetroAchiCommand(EndPointRoot + 'game_info.php', ApiKey, '/ginfo', ['game']));
 
