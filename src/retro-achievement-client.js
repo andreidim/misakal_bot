@@ -127,7 +127,6 @@ class RAGlistCommand extends RetroAchiCommand{
 
     }
 
-      
     
    transform(resp){
 
