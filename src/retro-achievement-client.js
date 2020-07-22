@@ -11,10 +11,9 @@ class RetroAchiCommand {
         this.endPoint = endPoint;
         this.cmd = cmd;
         this.args = args;
-        //This property will be populated evertyme build
-        //comand is execute.
+        //This property will be populated evertyme buildEndpoint
+        //method is execute.
         this.userArgs = null;
-        //Default Converter, just convert JSON in String.
         this.description = description;
         this.converter = converter;
 
@@ -117,7 +116,7 @@ class RASummaryCommand extends RetroAchiCommand {
                 
 }
 
-class RAGlistCommand extends RetroAchiCommand{
+class RAGListCommand extends RetroAchiCommand{
     
     constructor(endPoint, apiKey){
        
@@ -127,7 +126,7 @@ class RAGlistCommand extends RetroAchiCommand{
 
     }
 
-    
+
    transform(resp){
 
        let output= `<b>Game List Console: ${resp.userArgs.console} Search: ${resp.userArgs.filter}</b>\n`;
@@ -175,7 +174,7 @@ export default class RetroAchivClient {
         this.addCommand(new RetroAchiCommand(EndPointRoot + 'user_recent.php', ApiKey, '/recent', ['member', 'game']));
 
          //Resgistering Game List Command which was defined in a separate class.
-        this.addCommand(new RAGlistCommand(EndPointRoot, ApiKey));
+        this.addCommand(new RAGListCommand(EndPointRoot, ApiKey));
         //Resgistering Summary Command which was defined in a separate class.
         this.addCommand( new RASummaryCommand(EndPointRoot, ApiKey) );
  
